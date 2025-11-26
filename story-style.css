@@ -1,0 +1,955 @@
+/* ========================================
+   المتغيرات - نفس ألوان موقعك
+======================================== */
+:root {
+    --primary-color: #7b4397;
+    --secondary-color: #dc2430;
+    --accent-color: #ffc107;
+    --text-dark: #333;
+    --text-light: #fff;
+    --bg-body-color: #FFFFFF;
+    --font-family: 'Cairo', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dark);
+    overflow-x: hidden;
+}
+
+/* ========================================
+   صفحة البداية
+======================================== */
+.intro-page {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.intro-page.active {
+    display: flex;
+}
+
+.story-card {
+    background: white;
+    border-radius: 25px;
+    padding: 50px;
+    max-width: 700px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    animation: fadeInUp 0.8s ease;
+}
+
+.story-header {
+    margin-bottom: 30px;
+}
+
+.story-title {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.story-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.story-icon i {
+    font-size: 3rem;
+    color: white;
+}
+
+.story-description {
+    margin: 30px 0;
+    line-height: 1.8;
+}
+
+.story-description p {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.story-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(123, 67, 151, 0.05);
+    border-radius: 15px;
+}
+
+.story-info span {
+    font-size: 0.95rem;
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.story-info i {
+    margin-left: 8px;
+}
+
+/* ========================================
+   خيار تشغيل الصوت
+======================================== */
+.audio-option {
+    margin: 30px 0;
+}
+
+.audio-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    padding: 15px 25px;
+    background: rgba(123, 67, 151, 0.1);
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    border: 2px solid var(--primary-color);
+}
+
+.audio-toggle:hover {
+    background: rgba(123, 67, 151, 0.2);
+    transform: scale(1.02);
+}
+
+.audio-toggle input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+}
+
+.audio-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.audio-label i {
+    font-size: 1.3rem;
+}
+
+/* ========================================
+   زر التحكم بالصوت (عائم)
+======================================== */
+.audio-control {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(123, 67, 151, 0.4);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: none;
+}
+
+.audio-control.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.audio-control:hover {
+    background: var(--accent-color);
+    color: var(--text-dark);
+    transform: scale(1.1);
+}
+
+.audio-control.muted {
+    background: #999;
+}
+
+.audio-control.muted i::before {
+    content: "\f6a9";
+}
+
+.quiz-audio-btn {
+    top: 20px;
+    left: 20px;
+}
+
+/* ========================================
+   أزرار
+======================================== */
+.btn-start {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 18px 50px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 30px;
+    font-family: var(--font-family);
+    box-shadow: 0 10px 30px rgba(123, 67, 151, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-start:hover,
+.btn-start:active {
+    background: var(--accent-color);
+    color: var(--text-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(255, 193, 7, 0.4);
+}
+
+.btn-start i {
+    margin-left: 10px;
+}
+
+/* ========================================
+   صفحة الكتاب
+======================================== */
+.book-page {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    flex-direction: column;
+}
+
+.book-page.active {
+    display: flex;
+}
+
+.book-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.book {
+    width: 600px;
+    height: 800px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.page {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.page.active {
+    display: block;
+    opacity: 1;
+    animation: pageFlip 0.6s ease;
+}
+
+@keyframes pageFlip {
+    0% {
+        transform: perspective(1200px) rotateY(-90deg);
+        opacity: 0;
+    }
+    100% {
+        transform: perspective(1200px) rotateY(0deg);
+        opacity: 1;
+    }
+}
+
+.page-content {
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========================================
+   صفحة الغلاف
+======================================== */
+.cover-page {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+}
+
+.cover-image-container {
+    width: 100%;
+    max-width: 400px;
+    height: 400px;
+    margin: 0 auto 30px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.cover-main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cover-page h1 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    font-weight: 800;
+}
+
+.cover-subtitle {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+/* ========================================
+   محتوى الصفحات - الصور
+======================================== */
+.image-box {
+    flex: 1;
+    background: #f8f8f8;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 350px;
+    max-height: 450px;
+}
+
+.image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.text-box {
+    padding: 20px;
+    background: rgba(123, 67, 151, 0.05);
+    border-radius: 15px;
+    border-right: 5px solid var(--accent-color);
+    min-height: 150px;
+}
+
+.text-box p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 15px;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+/* ========================================
+   صفحة النهاية
+======================================== */
+.end-page {
+    background: linear-gradient(135deg, rgba(123, 67, 151, 0.05), rgba(220, 36, 48, 0.05));
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+}
+
+.moral-box {
+    text-align: center;
+    padding: 20px;
+}
+
+.moral-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.moral-icon i {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.moral-box h2 {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    font-weight: 800;
+}
+
+.moral-box p {
+    font-size: 1.2rem;
+    color: var(--text-dark);
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.8;
+}
+
+.objectives {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: right;
+    margin-top: 20px;
+}
+
+.objectives h3 {
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    font-weight: 800;
+}
+
+.objectives ul {
+    list-style: none;
+    padding: 0;
+}
+
+.objectives li {
+    padding: 10px;
+    margin-bottom: 8px;
+    background: rgba(123, 67, 151, 0.05);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.objectives li::before {
+    content: "✓";
+    color: var(--accent-color);
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+/* ========================================
+   الصفحة الأخيرة
+======================================== */
+.final-page {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.final-icon {
+    width: 100px;
+    height: 100px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px;
+    animation: pulse 2s infinite;
+}
+
+.final-icon i {
+    font-size: 3rem;
+    color: white;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.final-page h2 {
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: 800;
+}
+
+.final-page p {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+.btn-quiz {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 18px 50px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: var(--font-family);
+    box-shadow: 0 10px 30px rgba(123, 67, 151, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-quiz:hover,
+.btn-quiz:active {
+    background: var(--accent-color);
+    color: var(--text-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(255, 193, 7, 0.4);
+}
+
+.btn-quiz i {
+    margin-left: 10px;
+}
+
+/* ========================================
+   أزرار التنقل
+======================================== */
+.nav-btn {
+    width: 60px;
+    height: 60px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(123, 67, 151, 0.3);
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover,
+.nav-btn:active {
+    background: var(--accent-color);
+    color: var(--text-dark);
+    transform: scale(1.1);
+    box-shadow: 0 8px 30px rgba(255, 193, 7, 0.4);
+}
+
+.nav-btn:disabled {
+    background: #999;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.nav-btn:disabled:hover {
+    background: #999;
+    transform: none;
+}
+
+/* ========================================
+   عداد الصفحات
+======================================== */
+.page-counter {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* ========================================
+   صفحة الأسئلة
+======================================== */
+.quiz-page {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.quiz-page.active {
+    display: flex;
+}
+
+.quiz-container {
+    background: white;
+    border-radius: 25px;
+    padding: 50px;
+    max-width: 900px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    animation: fadeInUp 0.8s ease;
+}
+
+.quiz-title {
+    text-align: center;
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 40px;
+}
+
+.quiz-section {
+    margin-bottom: 40px;
+}
+
+.section-title {
+    color: var(--secondary-color);
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid var(--accent-color);
+}
+
+.question {
+    background: rgba(123, 67, 151, 0.05);
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    border-right: 5px solid var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.question-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.options label {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    background: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.options label:hover {
+    background: rgba(123, 67, 151, 0.1);
+    border-color: var(--primary-color);
+}
+
+.options input[type="radio"] {
+    margin-left: 15px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+}
+
+.btn-submit {
+    width: 100%;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 18px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    border-radius: 15px;
+    cursor: pointer;
+    font-family: var(--font-family);
+    box-shadow: 0 10px 30px rgba(123, 67, 151, 0.3);
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.btn-submit:hover,
+.btn-submit:active {
+    background: var(--accent-color);
+    color: var(--text-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(255, 193, 7, 0.4);
+}
+
+.btn-submit i {
+    margin-left: 10px;
+}
+
+.result {
+    margin-top: 30px;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    display: none;
+}
+
+.result.show {
+    display: block;
+    animation: fadeInUp 0.5s ease;
+}
+
+.result.success {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+}
+
+.result.partial {
+    background: linear-gradient(135deg, #FF9800, #F57C00);
+    color: white;
+}
+
+.result.fail {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+}
+
+.btn-restart {
+    width: 100%;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    border-radius: 15px;
+    cursor: pointer;
+    font-family: var(--font-family);
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-restart:hover,
+.btn-restart:active {
+    background: var(--accent-color);
+    color: var(--text-dark);
+    transform: translateY(-2px);
+}
+
+.btn-restart i {
+    margin-left: 10px;
+}
+
+/* ========================================
+   Animations
+======================================== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   Responsive Design
+======================================== */
+@media (max-width: 768px) {
+    .story-card {
+        padding: 30px 20px;
+    }
+
+    .story-title {
+        font-size: 1.8rem;
+    }
+
+    .story-info {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .book {
+        width: 90vw;
+        max-width: 500px;
+        height: auto;
+        min-height: 600px;
+    }
+
+    .book-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .nav-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+
+    .page-content {
+        padding: 20px;
+    }
+
+    .cover-page h1 {
+        font-size: 1.8rem;
+    }
+
+    .cover-image-container {
+        max-width: 300px;
+        height: 300px;
+    }
+
+    .image-box {
+        min-height: 250px;
+        max-height: 350px;
+    }
+
+    .text-box {
+        min-height: 120px;
+    }
+
+    .text-box p {
+        font-size: 1rem;
+    }
+
+    .quiz-container {
+        padding: 30px 20px;
+    }
+
+    .quiz-title {
+        font-size: 1.8rem;
+    }
+
+    .question-text {
+        font-size: 1rem;
+    }
+
+    .options label {
+        font-size: 0.95rem;
+    }
+
+    .audio-control {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+        top: 15px;
+        left: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-start,
+    .btn-quiz,
+    .btn-submit {
+        font-size: 1rem;
+        padding: 15px 30px;
+    }
+
+    .book {
+        min-height: 500px;
+    }
+
+    .image-box {
+        min-height: 200px;
+        max-height: 300px;
+    }
+
+    .cover-image-container {
+        max-width: 250px;
+        height: 250px;
+    }
+}
+
+/* ========================================
+   زر العودة للقائمة
+======================================== */
+.back-to-list-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(123, 67, 151, 0.4);
+    transition: all 0.3s ease;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.back-to-list-btn:hover {
+    background: var(--accent-color);
+    color: var(--text-dark);
+    transform: scale(1.1);
+}
+
+/* ========================================
+   تحسينات للأسئلة الديناميكية
+======================================== */
+.fill-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: var(--font-family);
+    margin-top: 10px;
+}
+
+.essay-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: var(--font-family);
+    margin-top: 10px;
+    resize: vertical;
+}
+
+.correct-answer {
+    color: #4CAF50;
+    font-weight: 700;
+    margin-top: 10px;
+    display: block;
+}
+
+.essay-sample {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #555;
+}

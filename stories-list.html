@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مكتبة القصص التربوية</title>
+    <link rel="stylesheet" href="stories-list.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- رأس الصفحة -->
+    <header class="main-header">
+        <div class="header-content">
+            <h1 class="main-title">
+                <i class="fas fa-book-open"></i>
+                مكتبة القصص التربوية
+            </h1>
+            <p class="subtitle">اختر قصة مناسبة لعمر طفلك واستمتع بتعلم القيم والأخلاق</p>
+        </div>
+    </header>
+
+    <!-- محتوى الصفحة -->
+    <main class="main-content">
+        <div class="stories-grid" id="storiesGrid">
+            <!-- سيتم ملء القصص ديناميكياً -->
+        </div>
+    </main>
+
+    <!-- نافذة اختيار الفئة العمرية -->
+    <div id="ageModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalStoryTitle">اختر الفئة العمرية</h2>
+                <button class="close-btn" onclick="closeAgeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="age-options">
+                    <button class="age-btn" onclick="selectAge('3-5')">
+                        <div class="age-icon">
+                            <i class="fas fa-baby"></i>
+                        </div>
+                        <div class="age-info">
+                            <h3>3-5 سنوات</h3>
+                            <p>قصص بسيطة وممتعة</p>
+                        </div>
+                    </button>
+                    <button class="age-btn" onclick="selectAge('6-8')">
+                        <div class="age-icon">
+                            <i class="fas fa-child"></i>
+                        </div>
+                        <div class="age-info">
+                            <h3>6-8 سنوات</h3>
+                            <p>قصص تفاعلية وتعليمية</p>
+                        </div>
+                    </button>
+                    <button class="age-btn" onclick="selectAge('9-12')">
+                        <div class="age-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="age-info">
+                            <h3>9-12 سنوات</h3>
+                            <p>قصص متقدمة مع أسئلة</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="stories-list.js"></script>
+</body>
+</html>
+
