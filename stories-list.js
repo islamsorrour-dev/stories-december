@@ -6,54 +6,54 @@
 const stories = [
     { id: 1, name: "آداب الطعام والشراب" },
     { id: 2, name: "النظافة الشخصية" },
-    { id: 3, name: "احترام الوالدين" },
-    { id: 4, name: "آداب الحديث والاستئذان" },
+    { id: 3, name: "آداب الحديث والاستئذان" },
+    { id: 4, name: "بر الوالدين" },
     { id: 5, name: "برّ الجيران" },
     { id: 6, name: "الصدق والأمانة" },
     { id: 7, name: "التعاون والمشاركة" },
     { id: 8, name: "احترام المعلمين" },
     { id: 9, name: "الالتزام في المدرسة" },
     { id: 10, name: "النظام والترتيب" },
-    { id: 11, name: "مساعدة كبار السن" },
-    { id: 12, name: "الحفاظ على الممتلكات العامة" },
+    { id: 11, name: "الصبر" },
+    { id: 12, name: "الشكر" },
     { id: 13, name: "آداب استخدام الهاتف" },
-    { id: 14, name: "آداب الطريق والمرور" },
-    { id: 15, name: "ضبط النفس وقت الغضب" },
+    { id: 14, name: "آداب الطريق" },
+    { id: 15, name: "ضبط النفس" },
     { id: 16, name: "التواضع" },
     { id: 17, name: "الاعتذار عند الخطأ" },
     { id: 18, name: "حب الوطن" },
     { id: 19, name: "احترام الآخر" },
-    { id: 20, name: "الصبر والاجتهاد" },
-    { id: 21, name: "الشكر والعرفان" },
-    { id: 22, name: "العطاء والعمل الجماعي" },
-    { id: 23, name: "احترام الوقت" },
-    { id: 24, name: "التفاعل الإيجابي في الأنشطة" },
-    { id: 25, name: "تقبل النقد" },
-    { id: 26, name: "الاهتمام بالبيئة" },
-    { id: 27, name: "تجنب التنمر" },
-    { id: 28, name: "الحفاظ على الخصوصية" },
-    { id: 29, name: "التعاون مع الأسرة" },
-    { id: 30, name: "التعبير عن المشاعر بشكل صحي" },
-    { id: 31, name: "مساعدة الزملاء" },
-    { id: 32, name: "احترام الاختلاف" },
-    { id: 33, name: "آداب استخدام الإنترنت" },
-    { id: 34, name: "ترتيب الأدوات بعد اللعب" },
-    { id: 35, name: "قول الحقيقة" },
-    { id: 36, name: "احترام الأدوار" },
-    { id: 37, name: "اختيار الأصدقاء" },
-    { id: 38, name: "الاعتناء بالحيوانات" },
-    { id: 39, name: "احترام القوانين" },
-    { id: 40, name: "المبادرة بالأعمال الطيبة" },
-    { id: 41, name: "قول \"من فضلك\" و\"شكرًا\"" },
-    { id: 42, name: "الحفاظ على الهدوء داخل الصف" },
-    { id: 43, name: "التحكم في الانفعالات" },
-    { id: 44, name: "التفكير قبل التصرف" },
-    { id: 45, name: "الالتزام بالواجبات" },
-    { id: 46, name: "مشاركة الألعاب" },
-    { id: 47, name: "احترام المعلمين" },
-    { id: 48, name: "حب التعلم" },
-    { id: 49, name: "الثقة بالنفس دون غرور" },
-    { id: 50, name: "تكوين عادات إيجابية يومية" }
+    { id: 20, name: "احترام الوقت" },
+    { id: 21, name: "العطاء والعمل الجماعي" },
+    { id: 22, name: "تقبل النقد" },
+    { id: 23, name: "الاهتمام بالبيئة" },
+    { id: 24, name: "تجنب التنمر" },
+    { id: 25, name: "الحفاظ على الخصوصية" },
+    { id: 26, name: "التعاون مع الأسرة" },
+    { id: 27, name: "التعبير عن المشاعر" },
+    { id: 28, name: "مساعدة الزملاء" },
+    { id: 29, name: "احترام القوانين" },
+    { id: 30, name: "المبادرة بالأعمال الطيبة" },
+    { id: 31, name: "الإيثار" },
+    { id: 32, name: "الرفق بالحيوان" },
+    { id: 33, name: "التفاؤل والأمل" },
+    { id: 34, name: "القناعة" },
+    { id: 35, name: "الشجاعة" },
+    { id: 36, name: "حسن الاستماع" },
+    { id: 37, name: "إفشاء السلام" },
+    { id: 38, name: "زيارة المريض" },
+    { id: 39, name: "الابتسامة" },
+    { id: 40, name: "الهدية" },
+    { id: 41, name: "شكر النعمة" },
+    { id: 42, name: "حفظ اللسان" },
+    { id: 43, name: "آداب الطعام" },
+    { id: 44, name: "آداب النوم" },
+    { id: 45, name: "آداب العطاس" },
+    { id: 46, name: "آداب المجلس" },
+    { id: 47, name: "حق الجار" },
+    { id: 48, name: "صلة الرحم" },
+    { id: 49, name: "الرفق بالحيوان" },
+    { id: 50, name: "إماطة الأذى" }
 ];
 
 // ========================================
@@ -65,7 +65,7 @@ let selectedAge = null;
 // ========================================
 // تهيئة الصفحة
 // ========================================
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     renderStories();
 });
 
@@ -94,12 +94,12 @@ function createStoryCard(story) {
     const imagePath = `images/story-${story.id}.jpg`;
     const imageContainer = document.createElement('div');
     imageContainer.className = 'story-image-container';
-    
+
     const img = document.createElement('img');
     img.className = 'story-image';
     img.src = imagePath;
     img.alt = story.name;
-    img.onerror = function() {
+    img.onerror = function () {
         // إذا لم تكن الصورة موجودة، استخدم placeholder
         this.style.display = 'none';
         const placeholder = document.createElement('div');
@@ -107,7 +107,7 @@ function createStoryCard(story) {
         placeholder.innerHTML = '<i class="fas fa-book"></i>';
         imageContainer.appendChild(placeholder);
     };
-    
+
     imageContainer.appendChild(img);
 
     // محتوى البطاقة
@@ -184,20 +184,18 @@ function selectAge(age) {
 // ========================================
 function selectAgeForStory(storyId, age) {
     // إغلاق النافذة
-    closeAgeModal();
-
     // الانتقال إلى صفحة القصة
     // سيتم توجيه المستخدم إلى story.html?story=1&age=3-5
+    closeAgeModal();
     window.location.href = `story.html?story=${storyId}&age=${age}`;
 }
 
 // ========================================
 // إغلاق النافذة عند النقر خارجها
 // ========================================
-window.onclick = function(event) {
+window.onclick = function (event) {
     const modal = document.getElementById('ageModal');
     if (event.target === modal) {
         closeAgeModal();
     }
 }
-

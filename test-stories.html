@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Test Stories Data</title>
+</head>
+
+<body>
+    <h1>Stories Data Test</h1>
+    <div id="output">Testing...</div>
+    <script src="stories-data.js"></script>
+    <script>
+        const output = document.getElementById('output');
+        try {
+            if (typeof storiesData === 'undefined') {
+                output.innerHTML = '<span style="color:red">ERROR: storiesData is undefined. Script failed to load completely.</span>';
+            } else {
+                let report = 'storiesData loaded successfully.<br>';
+                const idsToCheck = [18, 21, 50]; // Check specific problem stories
+
+                idsToCheck.forEach(id => {
+                    const story = storiesData[id];
+                    if (story) {
+                        report += `Story ${id} (${story.name}): FOUND. <br>`;
+                        if (story['3-5']) report += ` - Age 3-5: OK<br>`;
+                        else report += ` - Age 3-5: <span style="color:red">MISSING</span><br>`;
+
+                        if (story['6-8']) report += ` - Age 6-8: OK<br>`;
+                        else report += ` - Age 6-8: <span style="color:red">MISSING</span><br>`;
+
+                        if (story['9-12']) report += ` - Age 9-12: OK<br>`;
+                        else report += ` - Age 9-12: <span style="color:red">MISSING</span><br>`;
+                    } else {
+                        report += `Story ${id}: <span style="color:red">NOT FOUND</span><br>`;
+                    }
+                });
+
+                const totalStories = Object.keys(storiesData).length;
+                report += `<br>Total Stories: ${totalStories}`;
+
+                output.innerHTML = report;
+            }
+        } catch (e) {
+            output.innerHTML = `<span style="color:red">Exception: ${e.message}</span>`;
+        }
+    </script>
+</body>
+
+</html>

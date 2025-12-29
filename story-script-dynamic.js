@@ -17,7 +17,7 @@ let currentAge = null;
 // ========================================
 // ⚙️ تهيئة الصفحة
 // ========================================
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // الحصول على معاملات URL
     const urlParams = new URLSearchParams(window.location.search);
     currentStoryId = parseInt(urlParams.get('story')) || 1;
@@ -26,8 +26,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // تحميل بيانات القصة
     if (storiesData[currentStoryId] && storiesData[currentStoryId][currentAge]) {
         currentStoryData = storiesData[currentStoryId][currentAge];
+        // التحقق من وجود صفحات القصة
+        if (!currentStoryData.pages || currentStoryData.pages.length === 0) {
+            console.error('القصة لا تحتوي على صفحات!', currentStoryId, currentAge);
+            alert('القصة لا تحتوي على صفحات!');
+            goBackToList();
+            return;
+        }
         initializeStory();
     } else {
+        console.error('القصة غير موجودة!', currentStoryId, currentAge);
         alert('القصة غير موجودة!');
         goBackToList();
     }
@@ -42,7 +50,7 @@ function initializeStory() {
     document.getElementById('storyDescription').textContent = `قصة تعليمية عن ${storiesData[currentStoryId].name}`;
     document.getElementById('storyPages').textContent = currentStoryData.pages.length + 2; // +2 للغلاف وصفحة النهاية
     document.getElementById('storyAge').textContent = currentAge;
-    
+
     // تحديث الأيقونة حسب نوع القصة
     const icons = {
         1: 'fa-utensils',
@@ -55,13 +63,13 @@ function initializeStory() {
 
     // إنشاء صفحات القصة
     createStoryPages();
-    
+
     // إنشاء ملفات الصوت
     createAudioFiles();
-    
+
     // إنشاء صفحة الأسئلة
     createQuizPage();
-    
+
     // تحديث العداد
     totalPages = currentStoryData.pages.length + 2; // +2 للغلاف وصفحة النهاية
     updatePageCounter();
@@ -95,14 +103,24 @@ function createStoryPages() {
         const pageDiv = document.createElement('div');
         pageDiv.className = 'page';
         pageDiv.id = `page-${index + 1}`;
-        
-        const textLines = page.text.split('\n').map(line => `<p>${line}</p>`).join('');
-        
+
+        const textLines = page.text.split('\n')
+            .filter(line => line.trim() !== '')
+            .map(line => `<p>${line}</p>`)
+            .join('');
+
+        // التحقق مما إذا كانت هذه هي الفئة العمرية 9-12 وليست الصفحة الأولى
+        // في هذه الحالة سنخفي الصورة لملء الكلام في الصفحة
+        const is9to12 = currentAge === '9-12';
+        const hideImage = is9to12 && index > 0;
+
         pageDiv.innerHTML = `
-            <div class="page-content">
+            <div class="page-content ${hideImage ? 'no-image' : ''}">
+                ${!hideImage ? `
                 <div class="image-box">
                     <img src="${page.image}" alt="صورة القصة" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;height:100%;color:#999;\\'><i class=\\'fas fa-image\\' style=\\'font-size:3rem;\\'></i></div>'">
                 </div>
+                ` : ''}
                 <div class="text-box">
                     ${textLines}
                 </div>
@@ -170,14 +188,14 @@ function createAudioFiles() {
         const audio = document.createElement('audio');
         audio.id = `audio-page-${index + 1}`;
         audio.src = `audio/story-${currentStoryId}-${currentAge}-${index + 1}.mp3`;
-        audio.addEventListener('error', function() {
+        audio.addEventListener('error', function () {
             // إذا لم يكن الملف موجوداً، لا شيء
         });
         audioContainer.appendChild(audio);
         storyAudios[index + 1] = audio;
-        
+
         // إضافة مستمع لحدث انتهاء الصوت
-        audio.addEventListener('ended', function() {
+        audio.addEventListener('ended', function () {
             if (audioEnabled) {
                 nextPage();
             }
@@ -204,21 +222,35 @@ function createAudioFiles() {
 function createQuizPage() {
     const quizContainer = document.getElementById('quizContainer');
     const quiz = currentStoryData.quiz;
-    
-    let html = '<h1 class="quiz-title">اختبر معلوماتك</h1>';
+
+    let html = '<div class="quiz-header">';
+    html += '<h1 class="quiz-title">اختبر معلوماتك</h1>';
+    html += '<button class="btn-print" onclick="printQuiz()" title="طباعة الأسئلة">';
+    html += '<i class="fas fa-print"></i> طباعة';
+    html += '</button>';
+    html += '</div>';
+
+    // ========================================
+    // الجزء الأول: أسئلة مع نتائج وتصحيح (صح/خطأ/اختيار/وصل)
+    // ========================================
+    let hasPart1Questions = false;
+    html += '<div class="quiz-part" id="quizPart1">';
+    html += '<h2 class="part-title">الجزء الأول: أسئلة الاختيار والتصحيح</h2>';
 
     // أسئلة الاختيار من متعدد
     if (quiz.mcq && quiz.mcq.length > 0) {
+        hasPart1Questions = true;
         html += '<div class="quiz-section"><h2 class="section-title">أولاً: اختار الإجابة الصحيحة</h2>';
         quiz.mcq.forEach((q, index) => {
             html += `
-                <div class="question">
+                <div class="question" data-type="mcq" data-index="${index}">
                     <p class="question-text">${index + 1}. ${q.q}</p>
                     <div class="options">
             `;
             q.options.forEach((option, optIndex) => {
                 const isCorrect = optIndex === q.correct ? 'correct' : 'wrong';
-                html += `<label><input type="radio" name="mcq${index}" value="${isCorrect}"> ${option}</label>`;
+                const letter = String.fromCharCode(0x0623 + optIndex); // أ، ب، ج، د، هـ
+                html += `<label><input type="radio" name="mcq${index}" value="${isCorrect}"> ${letter}. ${option}</label>`;
             });
             html += '</div></div>';
         });
@@ -227,10 +259,11 @@ function createQuizPage() {
 
     // أسئلة صح أم خطأ
     if (quiz.tf && quiz.tf.length > 0) {
+        hasPart1Questions = true;
         html += '<div class="quiz-section"><h2 class="section-title">ثانياً: ضع علامة (✓) أو (✗)</h2>';
         quiz.tf.forEach((q, index) => {
             html += `
-                <div class="question">
+                <div class="question" data-type="tf" data-index="${index}">
                     <p class="question-text">${index + 1}. ${q.q}</p>
                     <div class="options">
                         <label><input type="radio" name="tf${index}" value="${q.correct ? 'correct' : 'wrong'}"> صح</label>
@@ -242,52 +275,89 @@ function createQuizPage() {
         html += '</div>';
     }
 
-    // أسئلة الإكمال
-    if (quiz.fill && quiz.fill.length > 0) {
-        html += '<div class="quiz-section"><h2 class="section-title">ثالثاً: أكمل الجمل الآتية</h2>';
-        quiz.fill.forEach((q, index) => {
+    // أسئلة الوصل
+    if (quiz.match && quiz.match.length > 0) {
+        hasPart1Questions = true;
+        html += '<div class="quiz-section"><h2 class="section-title">ثالثاً: أسئلة وصل (ضع الرقم داخل القوس)</h2>';
+        html += '<p class="match-instruction">اختر الإجابة الصحيحة من القائمة ووضع رقمها داخل القوس</p>';
+        quiz.match.forEach((q, index) => {
             html += `
-                <div class="question">
-                    <p class="question-text">${index + 1}. ${q.q}</p>
-                    <div class="fill-answer">
-                        <input type="text" name="fill${index}" placeholder="اكتب الإجابة هنا" class="fill-input">
-                        <span class="correct-answer" style="display:none;">الإجابة الصحيحة: ${q.answer}</span>
-                    </div>
-                </div>
+                <div class="question match-question" data-type="match" data-index="${index}">
+                    <div class="match-question-wrapper">
+                        <p class="question-text">${index + 1}. ${q.q} ( )</p>
+                        <div class="match-container">
+                            <div class="match-options">
             `;
+            q.options.forEach((option, optIndex) => {
+                const isCorrect = optIndex === q.correct ? 'correct' : 'wrong';
+                const optionNumber = optIndex + 1;
+                const letter = String.fromCharCode(0x0623 + optIndex); // أ، ب، ج، د، هـ
+                html += `<label class="match-option"><input type="radio" name="match${index}" value="${isCorrect}"> <span class="match-number">${optionNumber}</span> <span class="match-letter">${letter}</span> <span class="match-text">${option}</span></label>`;
+            });
+            html += '</div></div></div></div>';
         });
         html += '</div>';
     }
 
-    // أسئلة الوصل
-    if (quiz.match && quiz.match.length > 0) {
-        html += '<div class="quiz-section"><h2 class="section-title">رابعاً: أسئلة وصل (ضع الرقم داخل القوس)</h2>';
-        quiz.match.forEach((q, index) => {
+    if (hasPart1Questions) {
+        html += `
+            <button class="btn-submit" onclick="submitQuiz()">
+                <i class="fas fa-check-circle"></i>
+                تحقق من الإجابات
+            </button>
+            <div id="result" class="result"></div>
+        `;
+    }
+    html += '</div>'; // نهاية الجزء الأول
+
+    // ========================================
+    // الجزء الثاني: أسئلة بدون نتائج (أكمل/مقالي) مع أزرار لمبة
+    // ========================================
+    let hasPart2Questions = false;
+    html += '<div class="quiz-part" id="quizPart2">';
+    html += '<h2 class="part-title">الجزء الثاني: أسئلة الإكمال والمقالية</h2>';
+
+    // أسئلة الإكمال
+    if (quiz.fill && quiz.fill.length > 0) {
+        hasPart2Questions = true;
+        html += '<div class="quiz-section"><h2 class="section-title">أولاً: أكمل الجمل الآتية</h2>';
+        quiz.fill.forEach((q, index) => {
             html += `
-                <div class="question">
-                    <p class="question-text">${index + 1}. ${q.q} ( )</p>
-                    <div class="options">
+                <div class="question fill-question" data-type="fill" data-index="${index}">
+                    <div class="question-header">
+                        <p class="question-text">${index + 1}. ${q.q}</p>
+                        <button class="answer-btn" onclick="showAnswer('fill', ${index}, '${q.answer.replace(/'/g, "\\'")}')" title="عرض الإجابة الصحيحة">
+                            <i class="fas fa-lightbulb"></i>
+                        </button>
+                    </div>
+                    <div class="fill-answer">
+                        <input type="text" name="fill${index}" placeholder="اكتب الإجابة هنا" class="fill-input">
+                        <span class="correct-answer" id="answer-fill-${index}" style="display:none;">
+                            <i class="fas fa-check-circle"></i> الإجابة الصحيحة: <strong>${q.answer}</strong>
+                        </span>
+                    </div>
+                </div>
             `;
-            q.options.forEach((option, optIndex) => {
-                const isCorrect = optIndex === q.correct ? 'correct' : 'wrong';
-                const letter = String.fromCharCode(0x0623 + optIndex); // أ، ب، ج، د، هـ
-                html += `<label><input type="radio" name="match${index}" value="${isCorrect}"> ${letter}. ${option}</label>`;
-            });
-            html += '</div></div>';
         });
         html += '</div>';
     }
 
     // أسئلة مقالية (للفئة 9-12)
     if (quiz.essay && quiz.essay.length > 0) {
-        html += '<div class="quiz-section"><h2 class="section-title">خامساً: أسئلة مقالية</h2>';
+        hasPart2Questions = true;
+        html += '<div class="quiz-section"><h2 class="section-title">ثانياً: أسئلة مقالية</h2>';
         quiz.essay.forEach((q, index) => {
             html += `
-                <div class="question">
-                    <p class="question-text">${index + 1}. ${q.q}</p>
+                <div class="question essay-question" data-type="essay" data-index="${index}">
+                    <div class="question-header">
+                        <p class="question-text">${index + 1}. ${q.q}</p>
+                        <button class="answer-btn" onclick="showAnswer('essay', ${index}, '${q.sample.replace(/'/g, "\\'")}')" title="عرض الإجابة النموذجية">
+                            <i class="fas fa-lightbulb"></i>
+                        </button>
+                    </div>
                     <textarea name="essay${index}" class="essay-input" placeholder="اكتب إجابتك هنا..." rows="4"></textarea>
-                    <div class="essay-sample" style="display:none; margin-top:10px; padding:10px; background:#f0f0f0; border-radius:8px;">
-                        <strong>إجابة نموذجية:</strong> ${q.sample}
+                    <div class="essay-sample" id="answer-essay-${index}" style="display:none;">
+                        <i class="fas fa-check-circle"></i> <strong>إجابة نموذجية:</strong> ${q.sample}
                     </div>
                 </div>
             `;
@@ -295,12 +365,9 @@ function createQuizPage() {
         html += '</div>';
     }
 
+    html += '</div>'; // نهاية الجزء الثاني
+
     html += `
-        <button class="btn-submit" onclick="submitQuiz()">
-            <i class="fas fa-check-circle"></i>
-            تحقق من الإجابات
-        </button>
-        <div id="result" class="result"></div>
         <button class="btn-restart" onclick="restartStory()" style="display:none;" id="restartBtn">
             <i class="fas fa-redo"></i>
             ابدأ القصة من جديد
@@ -308,6 +375,106 @@ function createQuizPage() {
     `;
 
     quizContainer.innerHTML = html;
+}
+
+// ========================================
+// عرض الإجابة الصحيحة (للجزء الثاني)
+// ========================================
+function showAnswer(type, index, answer) {
+    const answerElement = document.getElementById(`answer-${type}-${index}`);
+    if (answerElement) {
+        if (answerElement.style.display === 'none') {
+            answerElement.style.display = 'block';
+            answerElement.style.animation = 'fadeInUp 0.5s ease';
+        } else {
+            answerElement.style.display = 'none';
+        }
+    }
+}
+
+// ========================================
+// طباعة الأسئلة
+// ========================================
+function printQuiz() {
+    const quizContainer = document.getElementById('quizContainer');
+    const printWindow = window.open('', '_blank');
+
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html lang="ar" dir="rtl">
+        <head>
+            <meta charset="UTF-8">
+            <title>طباعة الأسئلة</title>
+            <style>
+                @page {
+                    margin: 2cm;
+                }
+                body {
+                    font-family: 'Cairo', Arial, sans-serif;
+                    direction: rtl;
+                    padding: 20px;
+                }
+                .quiz-title {
+                    text-align: center;
+                    color: #7b4397;
+                    font-size: 2rem;
+                    margin-bottom: 30px;
+                }
+                .part-title {
+                    color: #dc2430;
+                    font-size: 1.5rem;
+                    margin: 30px 0 20px;
+                    padding-bottom: 10px;
+                    border-bottom: 3px solid #ffc107;
+                }
+                .section-title {
+                    color: #dc2430;
+                    font-size: 1.3rem;
+                    margin: 25px 0 15px;
+                }
+                .question {
+                    margin-bottom: 20px;
+                    padding: 15px;
+                    border: 1px solid #ddd;
+                    border-radius: 10px;
+                }
+                .question-text {
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                    font-size: 1.1rem;
+                }
+                .options label {
+                    display: block;
+                    margin: 8px 0;
+                    padding: 8px;
+                }
+                .fill-input, .essay-input {
+                    width: 100%;
+                    border: 1px dashed #999;
+                    padding: 10px;
+                    margin-top: 10px;
+                    min-height: 40px;
+                }
+                .essay-input {
+                    min-height: 100px;
+                }
+                @media print {
+                    .btn-print, .btn-submit, .answer-btn, .audio-control, .back-to-list-btn {
+                        display: none !important;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            ${quizContainer.innerHTML.replace(/<button[^>]*>.*?<\/button>/gi, '').replace(/onclick="[^"]*"/gi, '')}
+        </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+    setTimeout(() => {
+        printWindow.print();
+    }, 250);
 }
 
 // ========================================
@@ -323,7 +490,7 @@ function stopCurrentAudio() {
 
 function playPageAudio(pageNumber) {
     stopCurrentAudio();
-    
+
     if (!audioEnabled) {
         return;
     }
@@ -337,7 +504,7 @@ function playPageAudio(pageNumber) {
     } else if (pageNumber === currentStoryData.pages.length + 2 && quizAudio) {
         audioToPlay = quizAudio;
     }
-    
+
     if (audioToPlay) {
         currentPlayingAudio = audioToPlay;
         currentPlayingAudio.play().catch(e => console.error("Error playing audio:", e));
@@ -381,7 +548,7 @@ function toggleQuizAudio() {
 // ========================================
 function showPage(pageIndex) {
     const pages = document.querySelectorAll('.book .page');
-    
+
     pages.forEach(page => {
         page.classList.remove('active');
     });
@@ -416,7 +583,7 @@ function prevPage() {
 function updateNavigationButtons() {
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
-    
+
     prevBtn.disabled = currentPage === 0;
     nextBtn.disabled = false;
 }
@@ -457,7 +624,7 @@ function showIntroPage() {
     document.getElementById('book-page').classList.remove('active');
     document.getElementById('quiz-page').classList.remove('active');
     document.getElementById('intro-page').classList.add('active');
-    
+
     stopCurrentAudio();
     document.getElementById('audioControlBtn').classList.remove('active');
     document.getElementById('quizAudioBtn').classList.remove('active');
@@ -466,10 +633,10 @@ function showIntroPage() {
 function startQuiz() {
     document.getElementById('book-page').classList.remove('active');
     document.getElementById('quiz-page').classList.add('active');
-    
+
     stopCurrentAudio();
     document.getElementById('audioControlBtn').classList.remove('active');
-    
+
     const quizAudioBtn = document.getElementById('quizAudioBtn');
     quizAudioBtn.classList.add('active');
 
@@ -481,19 +648,33 @@ function startQuiz() {
         quizAudioBtn.classList.add('muted');
         document.getElementById('quizAudioIcon').classList.replace('fa-volume-up', 'fa-volume-mute');
     }
-    
-    document.getElementById('result').classList.remove('show', 'success', 'partial', 'fail');
-    document.getElementById('restartBtn').style.display = 'none';
+
+    const resultDiv = document.getElementById('result');
+    if (resultDiv) {
+        resultDiv.classList.remove('show', 'success', 'partial', 'fail');
+    }
+    const restartBtn = document.getElementById('restartBtn');
+    if (restartBtn) {
+        restartBtn.style.display = 'none';
+    }
+
+    // إعادة تعيين جميع الإدخالات
     document.querySelectorAll('#quiz-page input[type="radio"], #quiz-page input[type="text"], #quiz-page textarea').forEach(input => {
         if (input.type === 'radio') input.checked = false;
         else input.value = '';
     });
-    
+
+    // إعادة تعيين ألوان الأسئلة
     document.querySelectorAll('.question').forEach(q => {
-        q.style.background = 'rgba(123, 67, 151, 0.05)';
-        q.style.borderColor = '#7b4397';
+        q.style.background = '';
+        q.style.borderColor = '';
     });
-    
+
+    // إخفاء الإجابات المعروضة في الجزء الثاني
+    document.querySelectorAll('.correct-answer, .essay-sample').forEach(answer => {
+        answer.style.display = 'none';
+    });
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -501,8 +682,8 @@ function submitQuiz() {
     const quiz = currentStoryData.quiz;
     let totalQuestions = 0;
     let correctAnswers = 0;
-    
-    // حساب أسئلة الاختيار من متعدد
+
+    // حساب أسئلة الاختيار من متعدد (الجزء الأول فقط)
     if (quiz.mcq) {
         quiz.mcq.forEach((q, index) => {
             totalQuestions++;
@@ -516,7 +697,7 @@ function submitQuiz() {
         });
     }
 
-    // حساب أسئلة صح أم خطأ
+    // حساب أسئلة صح أم خطأ (الجزء الأول فقط)
     if (quiz.tf) {
         quiz.tf.forEach((q, index) => {
             totalQuestions++;
@@ -530,7 +711,7 @@ function submitQuiz() {
         });
     }
 
-    // حساب أسئلة الوصل
+    // حساب أسئلة الوصل (الجزء الأول فقط)
     if (quiz.match) {
         quiz.match.forEach((q, index) => {
             totalQuestions++;
@@ -544,29 +725,35 @@ function submitQuiz() {
         });
     }
 
-    // عرض النتيجة
+    // ملاحظة: أسئلة الإكمال والمقالية (الجزء الثاني) لا يتم تصحيحها تلقائياً
+    // يمكن للطالب رؤية الإجابات الصحيحة من خلال أزرار اللمبة
+
+    // عرض النتيجة (فقط للجزء الأول)
     const resultDiv = document.getElementById('result');
     const restartBtn = document.getElementById('restartBtn');
     const percentage = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
-    
+
     let message = '';
     let resultClass = '';
-    
-    if (percentage === 100) {
-        message = `🎉 ممتاز! لقد أجبت على جميع الأسئلة بشكل صحيح!<br>درجتك: ${correctAnswers}/${totalQuestions} (${percentage}%)<br>أنت بطل! فهمت القصة جيداً 🌟`;
+
+    if (totalQuestions === 0) {
+        message = 'لا توجد أسئلة في الجزء الأول للتصحيح.';
+        resultClass = 'partial';
+    } else if (percentage === 100) {
+        message = `🎉 ممتاز! لقد أجبت على جميع أسئلة الجزء الأول بشكل صحيح!<br>درجتك: ${correctAnswers}/${totalQuestions} (${percentage}%)<br>أنت بطل! فهمت القصة جيداً 🌟`;
         resultClass = 'success';
     } else if (percentage >= 70) {
-        message = `👏 أحسنت! لقد أجبت بشكل جيد!<br>درجتك: ${correctAnswers}/${totalQuestions} (${percentage.toFixed(0)}%)<br>راجع الإجابات الخاطئة وحاول مرة أخرى 📚`;
+        message = `👏 أحسنت! لقد أجبت بشكل جيد في الجزء الأول!<br>درجتك: ${correctAnswers}/${totalQuestions} (${percentage.toFixed(0)}%)<br>راجع الإجابات الخاطئة وحاول مرة أخرى 📚`;
         resultClass = 'partial';
     } else {
-        message = `💪 حاول مرة أخرى!<br>درجتك: ${correctAnswers}/${totalQuestions} (${percentage.toFixed(0)}%)<br>اقرأ القصة مرة أخرى بتركيز أكبر 📖`;
+        message = `💪 حاول مرة أخرى!<br>درجتك في الجزء الأول: ${correctAnswers}/${totalQuestions} (${percentage.toFixed(0)}%)<br>اقرأ القصة مرة أخرى بتركيز أكبر 📖`;
         resultClass = 'fail';
     }
-    
+
     resultDiv.innerHTML = message;
     resultDiv.className = `result ${resultClass} show`;
     restartBtn.style.display = 'block';
-    
+
     resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
@@ -585,16 +772,16 @@ function markQuestionWrong(selector) {
 function restartStory() {
     stopCurrentAudio();
     if (quizAudio) quizAudio.pause();
-    
+
     currentPage = 0;
     audioEnabled = false;
-    
+
     document.getElementById('audio-checkbox').checked = false;
     showIntroPage();
-    
+
     document.getElementById('result').classList.remove('show');
     document.getElementById('restartBtn').style.display = 'none';
-    
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -605,7 +792,7 @@ function goBackToList() {
 // ========================================
 // ⌨️ التحكم بلوحة المفاتيح
 // ========================================
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function (event) {
     if (document.getElementById('book-page').classList.contains('active')) {
         if (event.key === 'ArrowRight') {
             prevPage();
